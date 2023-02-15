@@ -28,8 +28,8 @@ function App() {
     async function fetchAndSetUser() { 
       await initWeb3();
 
-      // setInterval(pollData, 1000);
-      await pollData();
+      setInterval(pollData, 1000);
+      //await pollData();
     }
     fetchAndSetUser(); 
   },[]);
@@ -37,10 +37,9 @@ function App() {
   const pollData = async () => {
     await getPot();
     await getBetEvents();
-    //await getWinEvents();
-    //await getFailEvents();
-
-    //makeFinalRecords();
+    await getWinEvents();
+    await getFailEvents();
+    makeFinalRecords();
   }
 
   const initWeb3 = async () => {
@@ -78,22 +77,19 @@ function App() {
   const makeFinalRecords = () => {
     let  f = 0, w = 0;
 
-    
-
     const records = [...betRecords];
-    for(let i=0; betRecords.length; i+=1) {
-      console.log(winRecords.length)
+    for(let i=0; i<betRecords.length; i+=1) {
       if(winRecords.length > 0 && betRecords[i].index === winRecords[w].index) {
-        /*records[i].win = 'WIN';
+        records[i].win = 'WIN';
         records[i].answer = records[i].challenge;
         records[i].pot = web3.utils.fromWei(winRecords[w].amount, 'ether');
-        if(winRecords.length - 1 > w) w++;*/
+        if(winRecords.length - 1 > w) w++;
 
       }else if(failRecords.length > 0 && betRecords[i].index === failRecords[f].index) {
-        /*records[i].win = 'FAIL';
+        records[i].win = 'FAIL';
         records[i].answer = failRecords[f].answer;
         records[i].pot = 0;
-        if(failRecords.length - 1 > f) f++;*/
+        if(failRecords.length - 1 > f) f++;
 
       }else {
         records[i].answer = 'Not Revealed';
@@ -109,8 +105,7 @@ function App() {
     for(let i=0; i<events.length; i+=1) {
       const record = {};
       record.index = parseInt(events[i].returnValues.index, 10).toString();
-      console.log(record.index)
-      record.bettor = events[i].returnValues.bettor;
+      record.bettor = events[i].returnValues.bettor.slice(0,4) + '...' + events[i].returnValues.bettor.slice(40,42);
       record.betBlockNumber = events[i].blockNumber;
       record.targetBlockNumber = events[i].returnValues.answerBlockNumber.toString();
       record.challenges = events[i].returnValues.challenges;
@@ -119,9 +114,7 @@ function App() {
       records.unshift(record);
     }
     console.log(records)
-    console.log("bet first   " + JSON.stringify(betRecords))
-    setBetRecords([{records}]);
-    console.log("bet second   " + JSON.stringify(betRecords))
+    setBetRecords(records);
   }
 
   const getWinEvents = async() => {
@@ -248,16 +241,17 @@ function App() {
           </thead>
           <tbody>
             {
-              betRecords.map((record, index) => {
+              finalRecords.map((record, index) => {
+                
                 return (
                   <tr key={index}>
                     <td>{record.index}</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
+                    <td>{record.bettor}</td>
+                    <td>{record.challenges}</td>
+                    <td>{record.answer}</td>
+                    <td>{record.pot}</td>
+                    <td>{record.win}</td>
+                    <td>{record.targetBlockNumber}</td>
                   </tr>
                 )
               })
