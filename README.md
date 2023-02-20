@@ -1,6 +1,8 @@
 # Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Lottery Dapp의 프론트엔드 부분을 react를 이용해 구현    
+블로그에 내용 정리 (https://dlwltn98.tistory.com/59)   
+ 
 
 ## Available Scripts
 
